@@ -12,14 +12,14 @@ import pandas as pd
 from git import Repo
 
 # Set default location of easylistpolish repository and its files
-REPOPATH = "easylistpolish"
+REPOPATH = "..\\easylistpolish"
 DIRPATH = "\\easylistpolish\\easylistpolish_"
 
 # Set default names and options
 BRANCH = "update-proposals-2"
 FILEREAD = "filters.xlsx"
 FILTERSHEET = 'filters'
-ONLYFIX = 'no'
+ONLYFIX = 'no' # TODO
 
 
 def setup():
@@ -118,9 +118,9 @@ def convert_to_md_link(link, notes, domains):
     """ Return hyperlink in .md format and site name with optional notes"""
     site = get_site_from_link(link, domains)
     if notes == "":
-        return "[" + link + "]("+ site + ")\n", site
+        return "[" + site + "](" + link + ")\n", site
     else:
-        return "[" + link + "]("+ site + " - " + notes + ")\n", site + " - " + notes
+        return "[" + site + " - " + notes + "](" + link + ")\n", site + " - " + notes
     
 
 def add_commit_create_pull(sheet, repo):
@@ -133,7 +133,7 @@ def add_commit_create_pull(sheet, repo):
     commit_msg = ""
 
     # Iterate through whole sheet
-    for i in range(5): # sheet.index:
+    for i in sheet.index:
         CHECK = sheet['Check'][i]
         PUSH = sheet['Push'][i]
         LINK = sheet['Link'][i]
