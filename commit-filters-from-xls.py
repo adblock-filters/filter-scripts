@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """ This script could be useful for retreiving filters from filters.xlsx,
-    analysing them, adding to correct easylistpolish files, 
-    auto commiting changes and creating pull-request message. 
+    inserting them to correct easylistpolish file, commiting changes automatically 
+    after each insert and creating pull-request message. 
     
     Run with 0-3 parameters:
-    script.py [branch-name [path_to_repository [onlyfix]]] """
+    python script.py [branch-name [path_to_repository [onlyfix]]] """
 
 # Import key modules
 import datetime, sys
@@ -16,7 +16,7 @@ REPOPATH = "..\\easylistpolish"
 DIRPATH = "\\easylistpolish\\easylistpolish_"
 
 # Set default names and options
-BRANCH = "update-proposals-2"
+BRANCH = "update-proposals"
 FILEREAD = "filters.xlsx"
 FILTERSHEET = 'filters'
 ONLYFIX = 'no' # TODO
