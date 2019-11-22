@@ -16,7 +16,7 @@ REPOPATH = "..\\easylistpolish"
 DIRPATH = "\\easylistpolish\\easylistpolish_"
 
 # Set default names and options
-BRANCH = "update-proposals"
+BRANCH = "update-proposals-3"
 FILEREAD = "filters.xlsx"
 FILTERSHEET = 'filters'
 ONLYFIX = 'no' # TODO
@@ -95,7 +95,7 @@ def repo_commit(repo, message):
     """ Add last changes and commit with commit message """
     repo.git.add(update=True)
     repo.git.commit('-m', message)
-    print("> commit: \t" + message)
+    print("> commit: " + message)
     return str(repo.head.commit)[:7]
 
 
@@ -120,7 +120,7 @@ def convert_to_md_link(link, notes, domains):
     if notes == "":
         return "[" + site + "](" + link + ")\n", site
     else:
-        return "[" + site + " - " + notes + "](" + link + ")\n", site + " - " + notes
+        return "[" + site + " - " + str(notes) + "](" + link + ")\n", site + " - " + str(notes)
     
 
 def add_commit_create_pull(sheet, repo):
@@ -171,6 +171,7 @@ def add_commit_create_pull(sheet, repo):
                 pull.write("__________________________\n")
                 pull.write("**# " + NUMBER + "**\n")
                 pull.write(MD_LINK[0])   
+                # print(NUMBER + ". " + MD_LINK[0])
 
     # Commit last changes
     if commit_msg != "":
