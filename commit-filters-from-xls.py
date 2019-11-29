@@ -7,7 +7,7 @@
     python script.py [branch-name [path_to_repository [onlyfix]]] """
 
 # Import key modules
-import datetime, sys
+import datetime, sys, os
 import pandas as pd
 from git import Repo
 
@@ -16,8 +16,7 @@ REPOPATH = "..\\easylistpolish"
 DIRPATH = "\\easylistpolish\\easylistpolish_"
 
 # Set default names and options
-BRANCH = "update-proposals-3"
-FILEREAD = "filters.xlsx"
+FILEREAD = "filters-testing.xlsx"
 FILTERSHEET = 'filters'
 ONLYFIX = 'no' # TODO
 
@@ -25,11 +24,11 @@ ONLYFIX = 'no' # TODO
 def setup():
     """ If any command-line param is set, change default ones """
     if len(sys.argv) == 2:
-        BRANCH = str(sys.argv[1])
+        BRANCH = str(sys.argv[1]) # to fix
     elif len(sys.argv) == 3:
-        REPOPATH = str(sys.argv[2])
+        REPOPATH = str(sys.argv[2]) # to fix
     elif len(sys.argv) == 4:
-        ONLYFIX = str(sys.argv[3])
+        ONLYFIX = str(sys.argv[3]) # to fix
 
 
 def open_file_to_write():
@@ -84,9 +83,11 @@ def domains_to_list(file_path):
 
 
 def repo_open(repo_path, branch):
-    """ Open and return git repository on selected branch """
+    """ Open and return git repository on new branch """
     repo = Repo(repo_path)
     assert not repo.bare
+    repo.git.checkout('master')
+    repo.git.branch(branch)
     repo.git.checkout(branch)
     return repo
 
@@ -105,8 +106,8 @@ def get_site_from_link(link, domains):
     if newlink[:3] == 'www': 
         newlink = newlink[4:]
 
-    # check if link has valid domain
-    # and return site name in site.domain format
+    # check if link has a valid domain
+    # and return site name in website.domain format
     for domain in domains:
         result = newlink.find(domain)
         if result != -1:
@@ -115,7 +116,7 @@ def get_site_from_link(link, domains):
 
 
 def convert_to_md_link(link, notes, domains):
-    """ Return hyperlink in .md format and site name with optional notes"""
+    """ Return: hyperlink in .md format, site name with optional notes"""
     site = get_site_from_link(link, domains)
     if notes == "":
         return "[" + site + "](" + link + ")\n", site
@@ -123,14 +124,16 @@ def convert_to_md_link(link, notes, domains):
         return "[" + site + " - " + str(notes) + "](" + link + ")\n", site + " - " + str(notes)
     
 
-def add_commit_create_pull(sheet, repo):
+def add_commit_create_pull(sheet):
     """ Check if key cells have valid content, 
         add filters to easylistpolish files,
         commit changes,
         create pull-request message for all commits """
     domains = domains_to_list(FILEREAD)
-    pull = open_file_to_write()
+    # pull = open_file_to_write()
     commit_msg = ""
+    PREV_LINK = ""
+    BRANCH = "update-1"
 
     # Iterate through whole sheet
     for i in sheet.index:
@@ -138,45 +141,57 @@ def add_commit_create_pull(sheet, repo):
         PUSH = sheet['Push'][i]
         LINK = sheet['Link'][i]
         
-        # If filter is checked and wasn't pushed before
+        # If filter is checked and hasn't been pushed yet
         if (CHECK=='yes' and PUSH=='no'):
 
-            # Set rest of the params
+            # Set rest of the params from sheet
             NUMBER = str(sheet['No'][i])[:-2]
             FILTER = sheet['Filter'][i]
             FILTERTYPE = sheet['Type'][i]
 
-            # If link is not empty, add another hyperlink to pull-request file
+            # If link is not empty (so we have a new link), create .md format link with optional notes
             if LINK != "":
                 MD_LINK = convert_to_md_link(LINK, sheet['Notes'][i], domains)
 
-            # If number is empty, add next hyperlink (if no filter) or next filter
+            # If number is empty (so we continue in same commit), 
+            # add next hyperlink (if no filter) or next filter
             if NUMBER is "":
                 if FILTER is "":
-                    pull.write(MD_LINK[0])
+                    # pull.write(MD_LINK[0])
+                    PREV_LINK = PREV_LINK + "  -  " + MD_LINK[0]
                 else:
                     write_filter_to_file(FILTERTYPE, FILTER)
 
-            # If number is NOT empty, commit previous changes and add next filter
+            # If number is NOT empty (so we have new number = new set of filters), 
+            # commit previous changes and add next filter
             else:
+                
+                repo = repo_open(REPOPATH, BRANCH)
                 if commit_msg != "":
                     COMMIT = repo_commit(repo, commit_msg)
-                    pull.write(COMMIT + "\n")
+                    # PULL REQUEST HERE
+                    command = 'powershell.exe ' + 'git pull-request --target-branch master --title "test from py script" --message "test message" --fork never'
+                    os.system(command)
+                    # pull.write(COMMIT + "\n")
 
+                BRANCH = "update-" + NUMBER
                 write_filter_to_file(FILTERTYPE, FILTER)
                 commit_msg = MD_LINK[1]
+                PREBRANCH = BRANCH
 
                 # Compose pull-request message
-                pull.write("\n")
-                pull.write("__________________________\n")
-                pull.write("**# " + NUMBER + "**\n")
-                pull.write(MD_LINK[0])   
+                # pull.write("\n")
+                # pull.write("__________________________\n")
+                # pull.write("**# " + NUMBER + "**\n")
+                # pull.write(MD_LINK[0])   
                 # print(NUMBER + ". " + MD_LINK[0])
 
-    # Commit last changes
+    # Commit last change (last filter from list)
     if commit_msg != "":
+        # BRANCH = "update-" + NUMBER
+        repo = repo_open(REPOPATH, BRANCH)
         COMMIT = repo_commit(repo, commit_msg)
-        pull.write(COMMIT + "\n")
+        # pull.write(COMMIT + "\n")
 
 
 def main():
@@ -184,8 +199,8 @@ def main():
     print("> script: commit-filters-from-xls.py is running")
     setup()
     sheet = open_sheet(FILEREAD, FILTERSHEET)
-    repo = repo_open(REPOPATH, BRANCH)
-    add_commit_create_pull(sheet, repo)
+    # repo = repo_open(REPOPATH, BRANCH)
+    add_commit_create_pull(sheet)
     print("> script: commit-filters-from-xls.py has finished all tasks")
 
 
