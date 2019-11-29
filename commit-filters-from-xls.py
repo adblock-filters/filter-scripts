@@ -16,7 +16,7 @@ REPOPATH = "..\\easylistpolish"
 DIRPATH = "\\easylistpolish\\easylistpolish_"
 
 # Set default names and options
-BRANCH = "update-proposals-3"
+BRANCH = "update-proposals"
 FILEREAD = "filters.xlsx"
 FILTERSHEET = 'filters'
 ONLYFIX = 'no' # TODO
@@ -25,11 +25,11 @@ ONLYFIX = 'no' # TODO
 def setup():
     """ If any command-line param is set, change default ones """
     if len(sys.argv) == 2:
-        BRANCH = str(sys.argv[1])
+        BRANCH = str(sys.argv[1]) # to fix
     elif len(sys.argv) == 3:
-        REPOPATH = str(sys.argv[2])
+        REPOPATH = str(sys.argv[2]) # to fix
     elif len(sys.argv) == 4:
-        ONLYFIX = str(sys.argv[3])
+        ONLYFIX = str(sys.argv[3]) # to fix
 
 
 def open_file_to_write():
