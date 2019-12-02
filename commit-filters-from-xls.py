@@ -7,7 +7,7 @@
     python script.py [branch-name [path_to_repository [onlyfix]]] """
 
 # Import key modules
-import datetime, sys, os
+import datetime, sys, os, subprocess
 import pandas as pd
 from git import Repo
 
@@ -121,8 +121,24 @@ def convert_to_md_link(link, notes, domains):
     if notes == "":
         return "[" + site + "](" + link + ")\n", site
     else:
-        return "[" + site + " - " + str(notes) + "](" + link + ")\n", site + " - " + str(notes)
+        return "[" + site + "-" + str(notes) + "](" + link + ")\n", site + "-" + str(notes)
+
+
+def runPowerShell(branch, link, title):
+    goto_dir = 'cd ..\\easylistpolish\\; '
+    returnto_dir = 'cd ..\\filter-scripts\\;'
+    hub = 'hub pull-request'
+    base = 'adblock-filters:master'
+    head = 'adblock-filters:' + branch
+    title = title
+    link = link
+    image = "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/" + title + ".png)"
+    ps_script = goto_dir + hub + ' --base ' + base + ' --head ' + head + ' --message ' + title +  ' --message ' + link + ' --message ' + image + '; ' + returnto_dir
     
+    # hub pull-request --base adblock-filters:master --head adblock-filters:update-127 --message portaltatrzanski --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/portaltatrzanski.pl.png)" --message "[http://portaltatrzanski.pl/](http://portaltatrzanski.pl/)"; cd ..\\filter-scripts\\ '
+                    
+    p = subprocess.Popen(["powershell.exe", ps_script], stdout=sys.stdout)
+    p.communicate()
 
 def add_commit_create_pull(sheet):
     """ Check if key cells have valid content, 
@@ -169,10 +185,9 @@ def add_commit_create_pull(sheet):
                 repo = repo_open(REPOPATH, BRANCH)
                 if commit_msg != "":
                     COMMIT = repo_commit(repo, commit_msg)
-                    # PULL REQUEST HERE
-                    command = 'powershell.exe ' + 'git pull-request --target-branch master --title "test from py script" --message "test message" --fork never'
-                    os.system(command)
-                    # pull.write(COMMIT + "\n")
+                    # PULL REQUEST 
+                    runPowerShell(BRANCH, MD_LINK[0], MD_LINK[1])
+                    
 
                 BRANCH = "update-" + NUMBER
                 write_filter_to_file(FILTERTYPE, FILTER)
