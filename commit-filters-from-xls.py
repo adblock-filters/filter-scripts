@@ -6,8 +6,16 @@
     Run with 0-3 parameters:
     python script.py [branch-name [path_to_repository [onlyfix]]] """
 
+### HUB COMMAND
+"""
+- first message is PR title
+- msgs are conncatenated with blank line btwn
+- see: https://hub.github.com/hub-pull-request.1.html
+hub pull-request --base easylistpolish:master --head adblock-filters:update-127 --message portaltatrzanski --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/portaltatrzanski.pl.png)" --message "[http://portaltatrzanski.pl/](http://portaltatrzanski.pl/)"
+"""
+
 # Import key modules
-import datetime, sys
+import datetime, sys, subprocess
 import pandas as pd
 from git import Repo
 
@@ -182,11 +190,18 @@ def add_commit_create_pull(sheet, repo):
 def main():
     """ Main """
     print("> script: commit-filters-from-xls.py is running")
-    setup()
-    sheet = open_sheet(FILEREAD, FILTERSHEET)
-    repo = repo_open(REPOPATH, BRANCH)
-    add_commit_create_pull(sheet, repo)
+    # setup()
+    # sheet = open_sheet(FILEREAD, FILTERSHEET)
+    # repo = repo_open(REPOPATH, BRANCH)
+    # add_commit_create_pull(sheet, repo)
     print("> script: commit-filters-from-xls.py has finished all tasks")
+
+    text3 = 'cd ..\\easylistpolish\\; hub pull-request --base adblock-filters:master --head adblock-filters:update-127 --message portaltatrzanski --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/portaltatrzanski.pl.png)" --message "[http://portaltatrzanski.pl/](http://portaltatrzanski.pl/)"; cd ..\\filter-scripts\\ '
+    p = subprocess.Popen(["powershell.exe", 
+                text3], 
+                stdout=sys.stdout)
+    p.communicate()
+
 
 
 if __name__== "__main__":
