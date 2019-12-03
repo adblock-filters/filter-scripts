@@ -103,9 +103,14 @@ def repo_open(repo_path, branch):
 
 def repo_commit(repo, message):
     """ Add last changes and commit with commit message """
+    # try:
     repo.git.add(update=True)
     repo.git.commit('-m', message)
+    origin = repo.remote(name='github')
+    origin.push()
     print(f"> commit:\t {message}")
+    # except:
+    #     print('Some error occured while pushing the code')  
     return str(repo.head.commit)[:7]
 
 
@@ -128,9 +133,9 @@ def convert_to_md_link(link, notes, domains):
     """ Return: hyperlink in .md format, site name with optional notes"""
     site = get_site_from_link(link, domains)
     if notes == "":
-        return "[" + site + "](" + link + ")\n", site
+        return "[" + site + "](" + link + ")", site
     else:
-        return "[" + site + "-" + str(notes) + "](" + link + ")\n", site + "-" + str(notes)
+        return "[" + site + "-" + str(notes).replace(" ", "-") + "](" + link + ")", site + "-" + str(notes).replace(" ", "-")
 
 
 def runPowerShell(branch, link, title):
@@ -139,13 +144,19 @@ def runPowerShell(branch, link, title):
     hub = 'hub pull-request'
     base = 'adblock-filters:master'
     head = 'adblock-filters:' + branch
-    title = title
-    link = link
+    qtitle = (f"\"{title}\"")
+    qlink = (f"\"{link}\"")
     image = (f'\"![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/{title}.png)\"')
-    ps_script = (f'{goto_dir} ; {hub} --base {base} --head {head} --message {title} --message {link} --message {image}; {returnto_dir};')
-    print(ps_script)
-    # hub pull-request --base adblock-filters:master --head adblock-filters:update-127 --message portaltatrzanski --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/portaltatrzanski.pl.png)" --message "[http://portaltatrzanski.pl/](http://portaltatrzanski.pl/)"; cd ..\\filter-scripts\\ '
-                    
+    ps_script = (f'{goto_dir} ; {hub} --base {base} --head {head} --message {qtitle} --message {qlink} --message {image}; {returnto_dir};')
+    # print(ps_script)
+    """ EXAMPLE
+    cd ..\easylistpolish\ ; 
+    hub pull-request --base adblock-filters:master --head adblock-filters:filterpatch-133 
+    --message "dziennikpolski24.pl-xmlhttprequest" 
+    --message "-[dziennikpolski24.pl-xmlhttprequest](https://dziennikpolski24.pl/)" 
+    --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/dziennikpolski24.pl-xmlhttprequest.png)"; 
+    cd ..\filter-scripts\;          
+    """
     p = subprocess.Popen(["powershell.exe", ps_script], stdout=sys.stdout)
     p.communicate()
 
@@ -182,7 +193,7 @@ def add_commit_create_pull(sheet):
             # add next hyperlink (if no filter) or next filter
             if NUMBER is "":
                 if FILTER is "":
-                    PREV_LINK = PREV_LINK + "+" + MD_LINK[0]
+                    PREV_LINK = PREV_LINK + "-" + MD_LINK[0]
                 else:
                     write_filter_to_file(FILTERTYPE, FILTER)
 
@@ -196,8 +207,8 @@ def add_commit_create_pull(sheet):
                     PREV_LINK = ""
 
                 # create new set
-                PREV_LINK = PREV_LINK + "+" + MD_LINK[0]
-                BRANCH = "filterpatch-" + NUMBER
+                PREV_LINK = (f"{PREV_LINK}-{MD_LINK[0]}")
+                BRANCH = (f"filterpatch-{NUMBER}")
 
                 repo = repo_open(REPOPATH, BRANCH)                                  
                 write_filter_to_file(FILTERTYPE, FILTER) # OPEN REPO ON BRANCH == NUMBER
@@ -205,10 +216,6 @@ def add_commit_create_pull(sheet):
 
                 # COMMIT = repo_commit(repo, commit_msg)
                 # runPowerShell(BRANCH, PREV_LINK, commit_msg)
-
-                
-                
-                # PREBRANCH = BRANCH
 
 
     # # Commit last change (last filter from list)
