@@ -24,7 +24,7 @@ REPOPATH = "..\\easylistpolish"
 DIRPATH = "\\easylistpolish\\easylistpolish_"
 
 # Set default names and options
-FILEREAD = "filters-testing.xlsx"
+FILEREAD = "filters.xlsx"
 FILTERSHEET = 'filters'
 ONLYFIX = 'no' # TODO
 
@@ -142,7 +142,7 @@ def runPowerShell(branch, link, title):
     goto_dir = 'cd ..\\easylistpolish\\'
     returnto_dir = 'cd ..\\filter-scripts\\'
     hub = 'hub pull-request'
-    base = 'adblock-filters:master'
+    base = 'easylistpolish:master' # 'adblock-filters:master'
     head = 'adblock-filters:' + branch
     qtitle = (f"\"{title}\"")
     qlink = (f"\"{link}\"")
