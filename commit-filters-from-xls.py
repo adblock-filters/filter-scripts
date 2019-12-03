@@ -72,6 +72,7 @@ def write_filter_to_file(filtertype, filter):
     filter_file = files.get(filtertype)
     filter_file.write(filter  + "\n")
     filter_file.close()
+    print(f"> write:\t {filter}")
 
 
 def open_sheet(file_path, sheetname):
@@ -104,7 +105,7 @@ def repo_commit(repo, message):
     """ Add last changes and commit with commit message """
     repo.git.add(update=True)
     repo.git.commit('-m', message)
-    print("> commit: " + message)
+    print(f"> commit:\t {message}")
     return str(repo.head.commit)[:7]
 
 
@@ -133,16 +134,16 @@ def convert_to_md_link(link, notes, domains):
 
 
 def runPowerShell(branch, link, title):
-    goto_dir = 'cd ..\\easylistpolish\\; '
-    returnto_dir = 'cd ..\\filter-scripts\\;'
+    goto_dir = 'cd ..\\easylistpolish\\'
+    returnto_dir = 'cd ..\\filter-scripts\\'
     hub = 'hub pull-request'
     base = 'adblock-filters:master'
     head = 'adblock-filters:' + branch
     title = title
     link = link
-    image = "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/" + title + ".png)"
-    ps_script = goto_dir + hub + ' --base ' + base + ' --head ' + head + ' --message ' + title +  ' --message ' + link + ' --message ' + image + '; ' + returnto_dir
-    
+    image = (f'\"![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/{title}.png)\"')
+    ps_script = (f'{goto_dir} ; {hub} --base {base} --head {head} --message {title} --message {link} --message {image}; {returnto_dir};')
+    print(ps_script)
     # hub pull-request --base adblock-filters:master --head adblock-filters:update-127 --message portaltatrzanski --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/portaltatrzanski.pl.png)" --message "[http://portaltatrzanski.pl/](http://portaltatrzanski.pl/)"; cd ..\\filter-scripts\\ '
                     
     p = subprocess.Popen(["powershell.exe", ps_script], stdout=sys.stdout)
@@ -157,7 +158,7 @@ def add_commit_create_pull(sheet):
     # pull = open_file_to_write()
     commit_msg = ""
     PREV_LINK = ""
-    BRANCH = "update-1"
+    BRANCH = "filterpatch-init"
 
     # Iterate through whole sheet
     for i in sheet.index:
@@ -173,7 +174,7 @@ def add_commit_create_pull(sheet):
             FILTER = sheet['Filter'][i]
             FILTERTYPE = sheet['Type'][i]
 
-            # If link is not empty (so we have a new link), create .md format link with optional notes
+            # If link is not empty (so we have a new link), create .md format hyperlink with optional notes
             if LINK != "":
                 MD_LINK = convert_to_md_link(LINK, sheet['Notes'][i], domains)
 
@@ -181,57 +182,52 @@ def add_commit_create_pull(sheet):
             # add next hyperlink (if no filter) or next filter
             if NUMBER is "":
                 if FILTER is "":
-                    # pull.write(MD_LINK[0])
-                    PREV_LINK = PREV_LINK + "  -  " + MD_LINK[0]
+                    PREV_LINK = PREV_LINK + "+" + MD_LINK[0]
                 else:
                     write_filter_to_file(FILTERTYPE, FILTER)
 
             # If number is NOT empty (so we have new number = new set of filters), 
             # commit previous changes and add next filter
             else:
-                
-                repo = repo_open(REPOPATH, BRANCH)
-                if commit_msg != "":
+                # commit last changes and reset variables
+                if BRANCH != "filterpatch-init": # if it's not first commit
                     COMMIT = repo_commit(repo, commit_msg)
-                    # PULL REQUEST 
-                    runPowerShell(BRANCH, MD_LINK[0], MD_LINK[1])
-                    
+                    runPowerShell(BRANCH, PREV_LINK, commit_msg)
+                    PREV_LINK = ""
 
-                BRANCH = "update-" + NUMBER
-                write_filter_to_file(FILTERTYPE, FILTER)
-                commit_msg = MD_LINK[1]
-                PREBRANCH = BRANCH
+                # create new set
+                PREV_LINK = PREV_LINK + "+" + MD_LINK[0]
+                BRANCH = "filterpatch-" + NUMBER
 
-                # Compose pull-request message
-                # pull.write("\n")
-                # pull.write("__________________________\n")
-                # pull.write("**# " + NUMBER + "**\n")
-                # pull.write(MD_LINK[0])   
-                # print(NUMBER + ". " + MD_LINK[0])
+                repo = repo_open(REPOPATH, BRANCH)                                  
+                write_filter_to_file(FILTERTYPE, FILTER) # OPEN REPO ON BRANCH == NUMBER
+                commit_msg = MD_LINK[1]                  # COMMIT IMMIDIATELY == P R O B L E M !
 
-    # Commit last change (last filter from list)
+                # COMMIT = repo_commit(repo, commit_msg)
+                # runPowerShell(BRANCH, PREV_LINK, commit_msg)
+
+                
+                
+                # PREBRANCH = BRANCH
+
+
+    # # Commit last change (last filter from list)
     if commit_msg != "":
-        # BRANCH = "update-" + NUMBER
-        repo = repo_open(REPOPATH, BRANCH)
         COMMIT = repo_commit(repo, commit_msg)
-        # pull.write(COMMIT + "\n")
+        runPowerShell(BRANCH, PREV_LINK, commit_msg)
+
+    repo.git.checkout('master')
+
 
 
 def main():
     """ Main """
-    print("> script: commit-filters-from-xls.py is running")
+    print("> script is running")
     setup()
     sheet = open_sheet(FILEREAD, FILTERSHEET)
-    # repo = repo_open(REPOPATH, BRANCH)
     add_commit_create_pull(sheet)
-    print("> script: commit-filters-from-xls.py has finished all tasks")
+    print("> script has finished")
 
-    text3 = 'cd ..\\easylistpolish\\; hub pull-request --base adblock-filters:master --head adblock-filters:update-127 --message portaltatrzanski --message "![image](https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/portaltatrzanski.pl.png)" --message "[http://portaltatrzanski.pl/](http://portaltatrzanski.pl/)"; cd ..\\filter-scripts\\ '
-    p = subprocess.Popen(["powershell.exe", 
-                text3], 
-                stdout=sys.stdout)
-    p.communicate()
-    
 
 if __name__== "__main__":
   main()
