@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-""" This script could be useful for retreiving filters from filters.xlsx,
-    inserting them to correct easylistpolish file, commiting changes automatically 
-    after each insert and creating pull-request message. 
-    
-    Run with 0-3 parameters:
-    python script.py [branch-name [path_to_repository [onlyfix]]] """
+""" Filters Pull Request Script """
 
 
 # Import key modules
@@ -13,12 +8,12 @@ import pandas as pd
 from git import Repo
 
 
-# Set default location of easylistpolish repository and its files
+# Set default parameters
 REPOPATH =      "../easylistpolish"
 DIRPATH =       "/easylistpolish/easylistpolish_"
 PUSHTO =        'origin' 
 FROMUSER =      'adblock-filters'
-TOUSER =        'adblock-filetrs'
+TOUSER =        'easylistpolish'
 TOBRANCH =      'master'
 IMAGES =        'https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/'
 FILEREAD =      'filters-testing.xlsx'
@@ -26,22 +21,23 @@ FILTERSHEET =   'filters'
 
 
 def parser():
+    """ Parse arguments """
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("--from",   default=FROMUSER,   help="pull-request FROM this user")
     parser.add_argument("--to",     default=TOUSER,     help="pull-request TO this user")
     parser.add_argument("--branch", default=TOBRANCH,   help="pull-request to this branch")
     parser.add_argument("--repo",   default=REPOPATH,   help="path to easylist repository")
-    parser.add_argument("--dir",    default=DIRPATH,    help="directory with filters list in .txt")
+    parser.add_argument("--dir",    default=DIRPATH,    help="directory and filenames of filters lists")
     parser.add_argument("--images", default=IMAGES,     help="link to images")
     parser.add_argument("--pushto", default=PUSHTO,     help="origin / github / upstream etc.")
     parser.add_argument("--read",   default=FILEREAD,   help="read filters from specified .xlsx")
-    parser.add_argument("--sheet",  default=FILTERSHEET,help="origin / github / upstream etc.")
+    parser.add_argument("--sheet",  default=FILTERSHEET,help="name of sheet with filters list")
     
     return parser.parse_args()
 
 
 def getFilterfiles():
-    """ Open particular file from easylist{language} repo """
+    """ Open particular file from easylist repo """
     path = f"{REPOPATH}{DIRPATH}"
     files = {
         'BLOCK':        (f"{path}specific_block.txt"),
@@ -69,7 +65,6 @@ def writeFilterToFile(filtertype, filter):
     except OSError:
         print (f"Could not open/read file: {filename}")
         sys.exit()
-
     with f:
         f.write(filter + "\n")
         f.close()
@@ -84,13 +79,11 @@ def openSheet(file_path, sheetname):
 
 
 def domainsToList(filepath):
-    """ Open domains list from .xls and put them in an array """
-    # domains_sheet = pd.read_excel(file_path, 'domains')
+    """ Open domains list from .xls sheet and put them in an array """
     domainsheet = openSheet(filepath, 'domains')
     domains = []
     for i in domainsheet.index:
         domains.append(domainsheet['Domain'][i])
-
     return domains
 
 
@@ -107,16 +100,20 @@ def openRepo(repo_path, branch):
 
 
 def commitAndPush(repo, message):
-    """ Add last changes, commit and push to origin """
+    """ Add last changes, commit and push to remote """
     try:
         repo.git.add(update=True)
         repo.git.commit('-m', message)
-        origin = repo.remote(name = PUSHTO)
-        origin.push()
-        print(f"> commit {str(repo.head.commit)[:7]} \t {message}")
-
     except:
-        print('An error occured while committing / pushing the code')  
+        print('An error occured while committing') 
+# try:
+    origin = repo.remote(name = PUSHTO)
+    origin.push()
+    print(f"> commit {str(repo.head.commit)[:7]} \t {message}")
+# except:
+    # print('An error occured while pushing the code, check if your credentials are stored')  
+
+
 
 
 def getSiteFromLink(link, domains):
@@ -136,7 +133,7 @@ def getSiteFromLink(link, domains):
 
 
 def convertToMdLink(link, notes, domains):
-    """ Return: hyperlink in .md format, site name with optional notes"""
+    """ Create hyperlink in .md format and commit msg with optional notes"""
     site = getSiteFromLink(link, domains)
     if not notes:
         return f"[{site}]({link})", site
@@ -164,11 +161,19 @@ def runPowerShell(branch, link, title):
     hyperlink = f"\"{link}\""
     image = (f'\"![image]({IMAGES}{title}.png)\"')
     
-    ps_script = (f'{goto_dir} ; {hubcommand} --base {base} --head {head} --message {pulltitle} --message {hyperlink} --message {image}; {returnto_dir};')
+    # IF WINDOWS
+    # ps_script = (f'{goto_dir} ; {hubcommand} --base {base} --head {head} --message {pulltitle} --message {hyperlink} --message {image}; {returnto_dir};')
     # print(ps_script)
+    # p = subprocess.Popen(["powershell.exe", ps_script], stdout=sys.stdout)
+    # p.communicate()
 
-    p = subprocess.Popen(["powershell.exe", ps_script], stdout=sys.stdout)
-    p.communicate()
+    # IF LINUX
+    ps_script = (f'{hubcommand} --base {base} --head {head} --message {pulltitle} --message {hyperlink} --message {image}')
+    print(ps_script)
+    wd = os.getcwd()
+    os.chdir("../easylistpolish/")
+    subprocess.Popen(ps_script, shell=True)
+    os.chdir(wd)
 
 
 def filtersPullRequest():
@@ -254,10 +259,7 @@ def main():
     print("\n##### Script is running ##### \n")
     start = time.time()
     
-    # filtersPullRequest()
-
-
-
+    filtersPullRequest()
 
     end = time.time()
     print(f"##### Finished in {round(end-start,2)}s ##### \n")
