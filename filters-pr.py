@@ -108,11 +108,13 @@ def commitAndPush(repo, message):
         print('An error occured while committing') 
 # try:
     origin = repo.remote(name = PUSHTO)
-    origin.push()
-    print(f"> commit {str(repo.head.commit)[:7]} \t {message}")
+    # origin.push('--set-upstream', 'origin')
+    # repo.git.config('credential.helper', 'store')
+
+    repo.git.push('--set-upstream', 'origin', str(repo.active_branch.name))
+    print(f"> commit {str(repo.head.commit)[:7]} {message}")
 # except:
     # print('An error occured while pushing the code, check if your credentials are stored')  
-
 
 
 
