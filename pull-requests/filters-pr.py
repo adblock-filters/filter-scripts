@@ -16,7 +16,7 @@ from subprocess import Popen, PIPE
 
 
 # Set default parameters
-REPOPATH =      "../easylistpolish"
+REPOPATH =      "../../easylistpolish"
 DIRPATH =       "/easylistpolish/easylistpolish_"
 PUSHTO =        'origin' 
 FROMUSER =      'adblock-filters'
