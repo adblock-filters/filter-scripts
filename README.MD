@@ -1,4 +1,4 @@
-## filters info extraction script
+### filters info extraction script
 ```
 usage: filters-from-excel.py [-h] [--file FILE] [--begin BEGIN] [--end END]
                              [--sheet SHEET]
@@ -11,7 +11,7 @@ optional arguments:
   --sheet SHEET  name of sheet with filters (default: 0 - first sheet in file)
 ```
 
-## filters pull-request script
+### filters pull-request script
 ```
 usage: filters-pr.py [-h] [--from-user FROM_USER] [--to-user TO_USER]
                      [--branch BRANCH] [--repo REPO] [--dir DIR]
@@ -31,7 +31,7 @@ optional arguments:
   --sheet SHEET         name of sheet with filters list (default: filters)
 ```
 
-### storing git credentials
+#### storing git credentials
 ```
 git config credential.helper store
 git config --global credential.helper store
