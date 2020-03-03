@@ -18,8 +18,4 @@ optional arguments:
   --sheet SHEET         name of sheet with filters list (default: filters)
 ```
 
-For example
 
-`python filter-pr.py --from-user adblock-filters --to-user easylistpolish --push-to upstream`
-
-will 
