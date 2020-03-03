@@ -1,4 +1,7 @@
-### filters pull-request script
+### Easy pull-requests from excel sheet
+
+`$ python filter-pr.py --from-user your-account --to-user easylistpolish --push-to upstream`
+
 ```
 usage: filters-pr.py [-h] [--from-user FROM_USER] [--to-user TO_USER]
                      [--branch BRANCH] [--repo REPO] [--dir DIR]
