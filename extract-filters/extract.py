@@ -27,17 +27,16 @@ def openSheet(args):
 
 
 def openTxt(args):
-    f = open(args.file, "r")
-    lines = f.readlines()
-    f.close()
-    if int(args.end) > 0: 
-        rows = lines[int(args.begin) : int(args.end)]
-    return rows
+    with open(args.file) as f:
+        lines = f.read().splitlines() 
+        if int(args.end) > 0: 
+            lines = lines[int(args.begin) : int(args.end)]
+        return lines
 
 
 def rowsToList(args):
     """ Rows from txt/xlsx to list """
-    if args.file[:-4] == ".txt":
+    if args.file[-4:] == ".txt":
         rows = openTxt(args)
     else:
         sheet = openSheet(args)
@@ -177,7 +176,8 @@ def createDataframe(args):
 def main():
     args = parser()
     df = createDataframe(args)
-    df.to_excel(OUTPUTFILE, sheet_name='filters')  
+    df.to_excel(OUTPUTFILE, sheet_name='filters') 
+    print("> extracted to output.xlsx \n") 
 
 
 if __name__== "__main__":
