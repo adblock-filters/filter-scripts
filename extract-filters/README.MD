@@ -1,9 +1,10 @@
 ### Filters from list to readable excel sheet
 
 ```
-python extract.py --file filters-to-extract.xlsx
+$ python extract.py --file filters-to-extract.xlsx
+```
 
-
+```
 usage: extract.py [-h] [--file FILE] [--begin BEGIN] [--end END]
                   [--sheet SHEET]
 
