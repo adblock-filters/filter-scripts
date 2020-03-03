@@ -1,14 +1,18 @@
+1. [Easy pull-request](../master/pull-requests) - to automate branch-commit-PR with photo/link attachement (for filters from excel sheet)
+2. [Filter feature extraction](../master/extract-filters) - to transform filter list to more easy-readable format
+3. [Issue answers](../master/pull-requests) - list of most common user concerns with answers, categorized
+
 ### filters info extraction script
 ```
-usage: filters-from-excel.py [-h] [--file FILE] [--begin BEGIN] [--end END]
-                             [--sheet SHEET]
+usage: extract.py [-h] [--file FILE] [--begin BEGIN] [--end END]
+                  [--sheet SHEET]
 
 optional arguments:
   -h, --help     show this help message and exit
-  --file FILE    path to file with filters (default: PolishBFFull.xlsx)
-  --begin BEGIN  extract rows FROM (default: 0 - first row)
-  --end END      extract rows TO (default: 0 - last row)
-  --sheet SHEET  name of sheet with filters (default: 0 - first sheet in file)
+  --file FILE    path to file with filters (default: filters-to-extract.xlsx)
+  --begin BEGIN  extract rows FROM (default: 0)
+  --end END      extract rows TO (default: 0)
+  --sheet SHEET  name of sheet with filters (default: 0)
 ```
 
 ### filters pull-request script
@@ -30,6 +34,13 @@ optional arguments:
   --read-from READ_FROM read filters from specified .xlsx (default: filters.xlsx)
   --sheet SHEET         name of sheet with filters list (default: filters)
 ```
+
+For example
+
+`python filter-pr.py --from-user adblock-filters --to-user easylistpolish --push-to upstream`
+
+will 
+
 
 #### storing git credentials
 ```
