@@ -7,7 +7,7 @@ OUTPUTFILE = 'output.xlsx'
 def parser():
     """ Parse arguments """
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--file",   default='PolishBFFull.xlsx',help="path to file with filters")
+    parser.add_argument("--file",   default='filters-to-extract.xlsx',help="path to file with filters")
     parser.add_argument("--begin",  default=0,                  help="extract rows FROM")
     parser.add_argument("--end",    default=0,                  help="extract rows TO")
     parser.add_argument("--sheet",  default=0,                  help="name of sheet with filters")
@@ -26,12 +26,24 @@ def openSheet(args):
     return sheet
 
 
+def openTxt(args):
+    f = open(args.file, "r")
+    lines = f.readlines()
+    f.close()
+    if int(args.end) > 0: 
+        rows = lines[int(args.begin) : int(args.end)]
+    return rows
+
+
 def rowsToList(args):
-    """ Rows from xls to list """
-    sheet = openSheet(args)
-    rows = []
-    for i in sheet.index:
-        rows.append(sheet[sheet.columns.tolist()[0]][i]) # get first column
+    """ Rows from txt/xlsx to list """
+    if args.file[:-4] == ".txt":
+        rows = openTxt(args)
+    else:
+        sheet = openSheet(args)
+        rows = []
+        for i in sheet.index:
+            rows.append(sheet[sheet.columns.tolist()[0]][i]) # get first column
     return rows
 
 
