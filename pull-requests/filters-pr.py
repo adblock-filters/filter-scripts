@@ -23,22 +23,22 @@ FROMUSER =      'adblock-filters'
 TOUSER =        'adblock-filters' #'easylistpolish'
 TOBRANCH =      'master'
 IMAGES =        'https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/'
-FILEREAD =      'filters-testing.xlsx'
+FILEREAD =      'filters.xlsx'
 FILTERSHEET =   'filters'
 
 
 def parser():
     """ Parse arguments """
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--from-user",  default=FROMUSER,   help="pull-request FROM this user")
-    parser.add_argument("--to-user",    default=TOUSER,     help="pull-request TO this user")
-    parser.add_argument("--branch",     default=TOBRANCH,   help="pull-request to this branch")
-    parser.add_argument("--repo",       default=REPOPATH,   help="path to easylist repository")
+    parser.add_argument("--from-user",  default=FROMUSER,   help="pull-request FROM USER repo")
+    parser.add_argument("--to-user",    default=TOUSER,     help="pull-request TO USER repo")
+    parser.add_argument("--branch",     default=TOBRANCH,   help="pull-request to selected branch")
+    parser.add_argument("--repo",       default=REPOPATH,   help="path to filter lists repository (i.e. easylsit)")
     parser.add_argument("--dir",        default=DIRPATH,    help="directory and filenames of filters lists")
-    parser.add_argument("--images",     default=IMAGES,     help="link to images")
+    parser.add_argument("--images",     default=IMAGES,     help="url to images web directory")
     parser.add_argument("--push-to",    default=PUSHTO,     help="origin / github / upstream etc.")
-    parser.add_argument("--read-from",  default=FILEREAD,   help="read filters from specified .xlsx")
-    parser.add_argument("--sheet",      default=FILTERSHEET,help="name of sheet with filters list")
+    parser.add_argument("--read-from",  default=FILEREAD,   help="read filters from specified .xlsx file")
+    parser.add_argument("--sheet",      default=FILTERSHEET,help="name of sheet with filter list")
     
     return parser.parse_args()
 
@@ -111,14 +111,15 @@ def commitAndPush(pushto, repo, message):
     try:
         repo.git.add(update=True)
         repo.git.commit('-m', message)
+        # repo.git.push('origin', str(repo.active_branch.name))
     except:
         print('An error occured while committing') 
 
     # try:
-        origin = repo.remote(name = pushto)
-        # repo.git.pull('https://github.com/adblock-filters/easylistpolish.git', str(repo.active_branch.name))
-        repo.git.push('--set-upstream', pushto, str(repo.active_branch.name))
-        print(f"> commit {str(repo.head.commit)[:7]} {message}")
+    #     origin = repo.remote(name = pushto)
+    #     repo.git.pull('https://github.com/adblock-filters/easylistpolish.git', str(repo.active_branch.name))
+    #     repo.git.push('--set-upstream', pushto, str(repo.active_branch.name))
+    #     print(f"> commit {str(repo.head.commit)[:7]} {message}")
 
     # except:
     #     print('An error occured while pushing the code, check if your credentials are stored')  
@@ -157,7 +158,7 @@ def runPowerShell(args, branch, link, title):
     head = f'{args.from_user}:{branch}'
     image = (f'![image]({args.images}{title}.png)')
     ps_script = (f'hub pull-request --base {base} --head {head} --message \"{title}\" --message \"{link}\" --message \"{image}\"')
-    # print(ps_script)
+    print(ps_script)
 
     wd = os.getcwd()
     os.chdir(args.repo)
@@ -248,24 +249,19 @@ def listArguments(args):
         if value is not None:
             print('{0:10}  {1}'.format(name, value))
 
+
 def main():
     print("### Filters Pull Request Script ###\n")
-    print("-> attention: script will modify filter files, create extra branches and pull-requests") 
-    print("-> selected options:\n")
+    print("> this script will modify filter files, create extra branches and pull-requests") 
+    print("> selected options:\n")
 
     args = parser()
     listArguments(args)            
-    input("\n-> press Enter to start...")
+    input("\n> press Enter to start...")
     
-    print("-> script is running \n")
+    print("> script is running \n")
     measureTime(filtersPullRequest, args)
-    # start = time.time()
-    
-    # filtersPullRequest(args)
-    
-    # end = time.time()
-    
-
+   
 
 if __name__== "__main__":
   main()
