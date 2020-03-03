@@ -8,7 +8,7 @@ usage: filters-pr.py [-h] [--from-user FROM_USER] [--to-user TO_USER]
 optional arguments:
   -h, --help            show this help message and exit
   --from-user FROM_USER pull-request FROM this user (default: adblock-filters)
-  --to-user TO_USER     pull-request TO this user (default: adblock-filters)
+  --to-user TO_USER     pull-request TO this user (default: easylistpolish)
   --branch BRANCH       pull-request to this branch (default: master)
   --repo REPO           path to easylist repository (default: ../../easylistpolish)
   --dir DIR             directory and filenames of filters lists (default: /easylistpolish/easylistpolish_)
@@ -17,3 +17,9 @@ optional arguments:
   --read-from READ_FROM read filters from specified .xlsx (default: filters.xlsx)
   --sheet SHEET         name of sheet with filters list (default: filters)
 ```
+
+For example
+
+`python filter-pr.py --from-user adblock-filters --to-user easylistpolish --push-to upstream`
+
+will 
