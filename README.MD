@@ -1,14 +1,15 @@
-1. [Easy pull-request](../master/pull-requests) - to automate branch-commit-PR with photo/link attachement (for filters from excel sheet)
-2. [Filter 'features' extraction](../master/extract-filters) - to transform filter list to easy-readable excel sheet
+1. [Filter 'features' extraction](../master/extract-filters) - to transform filter list to easy-readable excel sheet
+2. [Easy pull-request](../master/pull-requests) - to automate branch-commit-PR with photo/link attachement (for filters from excel sheet)
 3. [Issue answers](../master/pull-requests) - list of most common user concerns with answers, categorized
+
 
 ### Filter 'features' extraction
 
-`python extract.py --file easylist_specific_hide.txt`
+`$ python extract.py --file easylist_specific_hide.txt`
 
 create excel sheet (*output.xlsx*) with filtername, filter, website and type from specified file
 
-`python extract.py --file filters-to-extract.xlsx --begin 10 --end 20 -sheet filters`
+`$ python extract.py --file filters-to-extract.xlsx --begin 10 --end 20 -sheet filters`
 
 create *output.xlsx* from specified file with only rows 10-20 from sheetname *filters*
 
@@ -17,11 +18,12 @@ create *output.xlsx* from specified file with only rows 10-20 from sheetname *fi
 ### Easy pull-request
 
 
-`python filter-pr.py --from-user your-account --to-user easylistpolish --push-to upstream`
+`$ python filter-pr.py --from-user your-account --to-user easylistpolish --push-to upstream`
 
 pull-requests to forked repo from your account
 
-Script is using [hub](https://github.com/github/hub) - git tool with extra features. Install it with:
+Script is using [hub](https://github.com/github/hub) - git tool with extra features. 
+**Install it with:**
 
 
 platform | manager | command to run
@@ -31,19 +33,17 @@ Ubuntu | [Snap](https://snapcraft.io) | `snap install hub --classic`
 
 
 ```
-# indicate that you prefer HTTPS to SSH git clone URLs
-git config --global hub.protocol https
+# it might be useful to store your credentials
+$ hub create
+$ git config credential.helper store
+$ git push
+
+# or indicate that you prefer HTTPS to SSH git clone URLs
+$ git config --global hub.protocol https
 
 ```
+[Login problems](https://github.com/github/hub/issues/899)
 
-
-
-`python filter-pr.py  --from-user FROM_USER] [--to-user TO_USER]
-                     [--branch BRANCH] [--repo REPO] [--dir DIR]
-                     [--images IMAGES] [--push-to PUSH_TO]
-                     [--read-from READ_FROM] [--sheet SHEET]`
-
-create *output.xlsx* from specified file with only rows 10-20 from sheetname *filters*
 
 
 ```
@@ -78,17 +78,4 @@ optional arguments:
   --sheet SHEET         name of sheet with filters list (default: filters)
 ```
 
-For example
 
-`python filter-pr.py --from-user adblock-filters --to-user easylistpolish --push-to upstream`
-
-will 
-
-
-#### storing git credentials
-```
-git config credential.helper store
-# or
-git config --global credential.helper store
-git push
-```
