@@ -29,7 +29,7 @@ $ python filter-pr.py --from-user your-account --to-user easylistpolish --push-t
 * *filters.xlsx* contains 2 filters:
 ![filters](../master/screens/readme_2.png)
 
-* `$ python filter-pr.py --from-user your-account --to-user your-account --repo "../easylistpolish"`
+* `$ python filter-pr.py --from-user your-account --to-user your-account --repo "../easylistpolish" `
 
 * creates first branch: `filterpatch-1` with commit `example.com` which modifies the *easylistpolish_specific_hide.txt* by adding an extra line: `example.com##.big-advert` 
 * commit and branch are pushed
@@ -39,7 +39,7 @@ $ python filter-pr.py --from-user your-account --to-user easylistpolish --push-t
 ![image](https://your-repo-with-screenshots/example.com.png)
 ```
 
-Then takes another line(s) (branch: `filterpatch-2` with commit `example.com-left-banner` which modifies the *easylistpolish_specific_block.txt* by adding an extra line: `||example.com^*^big-advert` and PR)
+Then takes another line(s) (branch: `filterpatch-2` with commit `example.com-left-banner` which modifies the *easylistpolish_specific_block.txt* by adding an extra line: `||example.com^*^big-advert` and PR) and so on.
 
 ### Requirements - hub
 
@@ -59,9 +59,8 @@ $ hub create
 $ git config credential.helper store
 $ git push
 
-# or indicate that you prefer HTTPS to SSH git clone URLs
+# or to indicate that you prefer HTTPS to SSH git clone URLs
 $ git config --global hub.protocol https
-
 ```
 [Login problems](https://github.com/github/hub/issues/899)
 
