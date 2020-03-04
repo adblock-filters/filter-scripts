@@ -29,16 +29,17 @@ $ python filter-pr.py --from-user your-account --to-user easylistpolish --push-t
 * *filters.xlsx* contains 2 filters:
 ![filters](../master/screens/readme_2.png)
 
-* script runs
-`$ python filter-pr.py --from-user your-account --to-user your-account --repo "../easylistpolish"`
+* `$ python filter-pr.py --from-user your-account --to-user your-account --repo "../easylistpolish"`
 
-* and creates branch `filterpatch-1` with commit `example.com` which modifies the *easylistpolish_specific_hide.txt* by adding an extra line: `example.com##.big-advert` 
+* creates first branch: `filterpatch-1` with commit `example.com` which modifies the *easylistpolish_specific_hide.txt* by adding an extra line: `example.com##.big-advert` 
 * commit and branch are pushed
 * pull request is created with message:
 ```
 -[example.com](http://example.com)
 ![image](https://your-repo-with-screenshots/example.com.png)
 ```
+
+Then takes another line(s) (branch: `filterpatch-2` with commit `example.com-left-banner` which modifies the *easylistpolish_specific_block.txt* by adding an extra line: `||example.com^*^big-advert` and PR)
 
 ### Requirements - hub
 
