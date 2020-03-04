@@ -86,7 +86,7 @@ def extBlockDomain(filter, type):
     sites = filter[cut2+7:]
 
     if sites.find('|') != -1:
-        return extractBlockSites(sites, filter, filtername)
+        return extractBlockSites(sites, filter, filtername, type)
     else:
         return [filter, filtername, sites, type]
 
@@ -118,10 +118,18 @@ def extHide(filter, type):
 
 def extWhitelist(filter):
     if filter.find('domain=') != -1:
-        return extBlockDomain(filter[2:], 'WHITELIST')
+        return extBlockDomain(filter, 'WHITELIST')
 
     elif filter.find('||') != -1:
-        return extBlock(filter[4:], 'WHITELIST')
+        cut = filter.find('^')
+        if cut != -1: 
+            site = filter[4:cut]      
+            filtername = filter[cut:]
+        else: 
+            site = filter[4:]         
+            filtername = filter
+    
+        return [filter, filtername, site, 'WHITELIST']
 
 
 def extThirdparty(filter, type):
@@ -137,11 +145,11 @@ def extOther(filter):
     return [filter, '', '', 'OTHER']
 
 
-def extractBlockSites(sites, filter, filtername):
+def extractBlockSites(sites, filter, filtername, type='BLOCK'):
     splitted = sites.split('|')
     joined = []
     for site in splitted:
-        joined.append([filter, filtername, site, 'BLOCK'])
+        joined.append([filter, filtername, site, type])
     return joined
 
 
