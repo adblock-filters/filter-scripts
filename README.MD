@@ -4,7 +4,7 @@
 
 ---
 
-### Filter 'features' extraction
+## Filter 'features' extraction
 
 to create excel sheet (*output.xlsx*) with filtername, filter, website and type from specified file
 
@@ -16,14 +16,31 @@ to create *output.xlsx* from specified file with only rows 10-20 from sheetname 
 
 ---
 
-### Easy pull-request
+## Easy pull-request
 
 to make pull-requests to forked repo from your account
 ```
-$ python filter-pr.py --from-user your-account --to-user easylistpolish --push-to upstream`
+$ python filter-pr.py --from-user your-account --to-user easylistpolish --push-to upstream
 ```
 
-#### Requirements - hub
+### Example
+
+
+* *filters.xlsx* contains 2 filters:
+![filters](../master/screens/readme_2.png)
+
+* script runs
+`$ python filter-pr.py --from-user your-account --to-user your-account --repo "../easylistpolish"`
+
+* and creates branch `filterpatch-1` with commit `example.com` which modifies the *easylistpolish_specific_hide.txt* by adding an extra line: `example.com##.big-advert` 
+* commit and branch are pushed
+* pull request is created with message:
+```
+-[example.com](http://example.com)
+![image](https://your-repo-with-screenshots/example.com.png)
+```
+
+### Requirements - hub
 
 Script is using [hub](https://github.com/github/hub) - git tool with extra features. 
 **Install it with:**
