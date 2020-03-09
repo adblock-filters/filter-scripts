@@ -1,4 +1,4 @@
-## adblock filters editing/managing scripts 
+## adblock filters editing & managing scripts 
 
 1. [Filter 'features' extraction](../master/extract-filters) - to transform filter list to easy-readable excel sheet
 2. [Easy pull-request](../master/pull-requests) - to automate branch-commit-PR with photo/link attachement (for filters from excel sheet)
