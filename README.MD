@@ -1,10 +1,12 @@
+## adblock filters editing/managing scripts 
+
 1. [Filter 'features' extraction](../master/extract-filters) - to transform filter list to easy-readable excel sheet
 2. [Easy pull-request](../master/pull-requests) - to automate branch-commit-PR with photo/link attachement (for filters from excel sheet)
 3. [Issue answers](../master/pull-requests) - list of most common user concerns with answers, categorized
 
 ---
 
-## Filter 'features' extraction
+### Filter 'features' extraction
 
 to create excel sheet (*output.xlsx*) with filtername, filter, website and type from specified file
 
@@ -16,14 +18,14 @@ to create *output.xlsx* from specified file with only rows 10-20 from sheetname 
 
 ---
 
-## Easy pull-request
+### Easy pull-request
 
 to make pull-requests to forked repo from your account
 ```
 $ python filter-pr.py --from-user your-account --to-user easylistpolish --push-to upstream
 ```
 
-### Example
+#### Example
 
 
 * *filters.xlsx* contains 2 filters:
@@ -41,7 +43,7 @@ $ python filter-pr.py --from-user your-account --to-user easylistpolish --push-t
 
 Then takes another line(s) (branch: `filterpatch-2` with commit `example.com-left-banner` which modifies the *easylistpolish_specific_block.txt* by adding an extra line: `||example.com^*^big-advert` and PR) and so on.
 
-### Requirements - hub
+#### Requirements - hub
 
 Script is using [hub](https://github.com/github/hub) - git tool with extra features. 
 **Install it with:**
@@ -62,7 +64,10 @@ $ git push
 # or to indicate that you prefer HTTPS to SSH git clone URLs
 $ git config --global hub.protocol https
 ```
-[Login problems](https://github.com/github/hub/issues/899)
+
+#### Problems 
+
+* [Login problems](https://github.com/github/hub/issues/899)
 
 
 
