@@ -7,10 +7,10 @@ OUTPUTFILE = 'output.xlsx'
 def parser():
     """ Parse arguments """
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("--file",   default='filters-to-extract.xlsx',help="path to file with filters")
-    parser.add_argument("--begin",  default=0,                  help="extract rows FROM")
-    parser.add_argument("--end",    default=0,                  help="extract rows TO")
-    parser.add_argument("--sheet",  default=0,                  help="name of sheet with filters")
+    parser.add_argument("--file",   default='main-to-extract.xlsx', help="path to file with filters")
+    parser.add_argument("--begin",  default=0,                      help="extract rows FROM")
+    parser.add_argument("--end",    default=0,                      help="extract rows TO")
+    parser.add_argument("--sheet",  default=0,                      help="name of sheet with filters")
     
     return parser.parse_args()
 
