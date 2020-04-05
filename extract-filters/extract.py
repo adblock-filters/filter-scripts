@@ -167,11 +167,11 @@ def createDataframe(args):
 
     for row in rows:
         r = whichFilterType(row)
-
-        if any(isinstance(i, list) for i in r):     # if r is nested list
-            filterlist = filterlist + r
-        else:
-            filterlist.append(r)
+        if r is not None:
+            if any(isinstance(i, list) for i in r):     # if r is nested list
+                filterlist = filterlist + r
+            else:
+                filterlist.append(r)
 
     df=pd.DataFrame(filterlist,columns=['Filter','Name','Site','Type'])
     df['Checked'] = 'TO CHECK'
