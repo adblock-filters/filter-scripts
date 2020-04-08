@@ -20,7 +20,7 @@ REPOPATH =      "../../easylistpolish"
 DIRPATH =       "/easylistpolish/easylistpolish_"
 PUSHTO =        'origin' 
 FROMUSER =      'adblock-filters'
-TOUSER =        'adblock-filters' #'easylistpolish'
+TOUSER =        'easylistpolish'
 TOBRANCH =      'master'
 IMAGES =        'https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/'
 FILEREAD =      'filters.xlsx'
@@ -75,6 +75,7 @@ def writeFilterToFile(args, filtertype, filter):
     with f:
         f.write(filter + "\n")
         f.close()
+        print(f" - - - - - ")
         print(f"> write:\t {filter}")
 
 
@@ -157,7 +158,7 @@ def runPowerShell(args, branch, link, title):
     base = f'{args.to_user}:{args.branch}'
     head = f'{args.from_user}:{branch}'
     image = (f'![image]({args.images}{title}.png)')
-    ps_script = (f'hub pull-request --base {base} --head {head} --message \"{title}\" --message \"{link}\" --message \"{image}\"')
+    ps_script = (f'hub pull-request --push --base {base} --head {head} --message \"{title}\" --message \"{link}\" --message \"{image}\"')
     print(ps_script)
 
     wd = os.getcwd()
