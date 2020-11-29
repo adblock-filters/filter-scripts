@@ -1107,7 +1107,7 @@ mysnet.pl
 mysqlperformanceblog.com
 myszkow365.pl
 nacjonalista.pl
-nakanapa.pl
+nakanapa.pl<
 naklo.fm
 nakolei.pl
 namasce.pl
@@ -2152,6 +2152,9 @@ zyciestolicy.com.pl
 zycietoprzygoda.pl
 zyrardowskie.pl
 zywiec.super-nowa.pl
+
+
+
 24opole.pl/bimg/$image
 40ton.net/wp-content/uploads/*.gif$image
 40ton.net/wp-content/uploads/*.png$image
