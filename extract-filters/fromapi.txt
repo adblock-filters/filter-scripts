@@ -63,6 +63,7 @@ icyfrowypolsat.pl
 lokalna.news
 e-kolo.pl
 namasce.pl
+
 napiprojekt.pl
 portalrolniczy.info
 zyciekalisza.pl
@@ -156,7 +157,6 @@ swiatoze.pl
 krs-online.com.pl
 panoramakutna.pl
 techsetter.pl
-
 meczyki.pl
 hdtvpolska.com
 repairlab.pl

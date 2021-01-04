@@ -23,7 +23,7 @@ FROMUSER =      'adblock-filters'
 TOUSER =        'easylistpolish'
 TOBRANCH =      'master'
 IMAGES =        'https://raw.githubusercontent.com/adblock-filters/filter-scripts/master/screens/'
-FILEREAD =      'filters.xlsx'
+FILEREAD =      'filters.xls'
 FILTERSHEET =   'filters'
 
 
