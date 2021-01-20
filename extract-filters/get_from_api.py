@@ -8,6 +8,7 @@ import requests, json
 
 data = []
 
+START 			= 31
 NUM_OF_PAGES 	= 10
 extract_name 	= 'title' # check: https://developer.github.com/v3/issues/#list-repository-issues
 label 			= 'reklama'  
@@ -24,8 +25,8 @@ def query(url, extract):
 		data.append(issue[extract])
 
 
-def make_requests(pages):
-	for page in range(pages):
+def make_requests(start, pages):
+	for page in range(start, start+pages):
 		p = str(page+1)
 		url = f'{baseurl}?labels={label}&state={state}&page={p}'
 		print(' :query:\t', url)
@@ -34,7 +35,7 @@ def make_requests(pages):
 
 def main():
 	print(' :start:')
-	make_requests(NUM_OF_PAGES)
+	make_requests(START, NUM_OF_PAGES)
 	print(' :end:')
 	print('\n')
 
